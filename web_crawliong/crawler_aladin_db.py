@@ -37,20 +37,19 @@ driver.get('https://www.aladin.co.kr')
 driver.find_element(By.XPATH, '//*[@id="Wa_header1_headerTop"]/div[2]/div[3]/ul[1]/li[3]/a').click()
 
 
-cur_page_num = 2 # 현재 페이지 넘버
+cur_page_num = 2 # 현재 페이지 번호
 target_page_num = 9 # 목적지 페이지 번호
 rank = 1 # 순위
 
 
 while cur_page_num <= target_page_num:
 
-    for i in range(3, 11):
+        # selenium으로 현재 페이지의 html 소스 코드를 전부 불러오기     
         src = driver.page_source
 
         soup = BeautifulSoup(src, 'html.parser')
 
         div_list = soup.find_all('div', class_='ss_book_box')
-        # div_list = soup.select('div.ss_book_box') -> 가능
 
         for div in div_list:
             book_info = div.find_all('li')
@@ -68,13 +67,13 @@ while cur_page_num <= target_page_num:
 
             author_name, company, pub_day = [info.strip() for info in auth_info]
 
-            # sql을 문자열로 작성하고, 변수가 등거갈 위치를 %s %d 등으로 표현합니다.abs
+            # sql을 문자열로 작성하고, 변수가 들어갈 위치를 %s %d 등으로 표현합니다.abs
             # 값은 tuple에 순서대로 세팅해서 mycursor.execute()에 전달합니다.  
             queryu = 'INSERT INTO tbl_crawling (data_rank, title, author, company, publish_date, price) VALUES(%s, %s, %s, %s, %s, %s)'
 
-            valuse = (rank, book_title, author_name, company, pub_day, book_price.split(', ')[0])
+            values = (rank, book_title, author_name, company, pub_day, book_price.split(', ')[0])
 
-            mycursor.execute(queryu, valuse)
+            mycursor.execute(query, values)
 
             '''
             SELECT를 했다면...
@@ -86,7 +85,7 @@ while cur_page_num <= target_page_num:
 
             rank += 1
     
-        # 다음 페이지(웹)로 전환 
+        # 다음 페이지(탭)로 전환 
         cur_page_num += 1
         driver.find_element(By.XPATH, f'//*[@id="newbg_body"]/div[3]/ul/li[{cur_page_num}]/a').click()
         

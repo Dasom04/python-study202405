@@ -80,16 +80,12 @@ with codecs.open(file_path, mode='w', encoding='utf-8') as f:
 
         auth_info = book_author.split(' | ')
 
-        f.write(f'순위: {rank}위\n')
-        f.write(f'제목: {book_title}\n')
-        f.write(f'저자: {auth_info[0]}\n')
-        f.write(f'출판사: {auth_info[1]}\n')
-        f.write(f'출판월일: {auth_info[2]}\n')
-        f.write(f'가격: {book_price.split(", ")[0]}\n')
-        f.write('-' * 40+ '\n')
+        f.write(f'# 순위: {rank}위\n')
+        f.write(f'# 제목: {book_title}\n')
+        f.write(f'# 저자: {auth_info[0]}\n')
+        f.write(f'# 출판사: {auth_info[1]}\n')
+        f.write(f'# 출판년월: {auth_info[2]}\n')
+        f.write(f'# 가격: {book_price.split(", ")[0]}\n')
+        f.write('-' * 40 + '\n')
 
         rank += 1
-
-
-
-

@@ -4,7 +4,7 @@
 from selenium import webdriver
 from webdriver_manager.chrome import ChromeDriverManager
 
-# XPath등을 통해 요소를 지목하기 위한 클래스
+# XPath 등을 통해 요소를 지목하기 위한 클래스
 from selenium.webdriver.common.by import By
 import time as t
 
@@ -42,5 +42,5 @@ driver.find_element(By.XPATH, '//*[@id="pw"]').send_keys('qqqq1111')
 
 t.sleep(1)
 
-driver.find_element(By.XPATH, '//*[@id="log.login"]/span').click()
+driver.find_element(By.XPATH, '//*[@id="log.login"]').click()
 

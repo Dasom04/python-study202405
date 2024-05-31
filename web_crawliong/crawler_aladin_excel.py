@@ -9,11 +9,11 @@ from bs4 import BeautifulSoup
 import xlsxwriter
 
 # user-agent 정보를 변환해 주는 모듈 임포트
-# 특정 브라우저로 크롤링을 진행할 떄 차단되는 것을 방지
+# 특정 브라우저로 크롤링을 진행할 때 차단되는 것을 방지
 # pip install fake_useragent
 from fake_useragent import UserAgent
 
-# 이미지를 바이트 단위로 반황 처리 모듈
+# 이미지를 바이트 단위로 변환 처리 모듈
 from io import BytesIO
 
 # 요청 헤더 정보를 꺼내올 수 있는 모듈
@@ -26,11 +26,11 @@ file_path = f'C:/MyworkSpace/upload/알라딘 베스트셀러 1~400위_{d.year}_
 
 # User Agent 정보 변환 (필수는 아닙니다.)
 opener = req.build_opener() # 헤더 정보를 초기화
-opener.addheaders = [('User-Agent', UserAgent().edge)]
+opener.addheaders = [('User-agent', UserAgent().edge)]
 req.install_opener(opener) # 새로운 헤더 정보를 삽입
 
 # 엑셀 처리 선언
-# Workbook 객체를 생성해서 엑셀 파일을 하나 생성 (생성자의 매개값으로 저장될 경로를 지정)
+# Workbook 객체를 생성해서 엑셀 파일을 하나 생성 (생성자의 매개값으로는 저장될 경로를 지정)
 workbook = xlsxwriter.Workbook(file_path)
 
 # 워크 시트 생성
@@ -58,7 +58,7 @@ driver.get('https://www.aladin.co.kr/shop/common/wbest.aspx?BranchType=1&start=w
 # 웹 페이지 전체가 로딩될 때 까지 대기 후 렌더링이 완료되었다면 남은 시간 무시
 driver.implicitly_wait(10)
 
-# 엑셀에 텍스트 지정 (헤더 만들기)
+# 엑셀에 텍스트 저장 (헤더 만들기)
 cell_format = workbook.add_format({
     'font_name': '함초롬돋움',
     'bold': True, 
@@ -68,7 +68,7 @@ cell_format = workbook.add_format({
     'align': 'center',
     'valign': 'vcenter',
     'border': 2,
-    'border_coloer': 'black'
+    'border_color': 'black'
 })
 
 # 셀 너비 조정
@@ -91,17 +91,16 @@ worksheet.write('G1', '링크', cell_format)
 '''
 # enumerate 함수는 순서가 있는 자료형(리스트, 튜플, 문자열)을 전달받아 인덱스와 해당 항목을
 # 포함하는 튜플을 반환하는 함수입니다.
-headers = ['썸네일', '제목', '작가', '출판사', '출판일',' 가격', '링크']
+headers = ['썸네일', '제목', '작가', '출판사', '출판일','가격', '링크']
 for col, header in enumerate(headers):
-    # write(행번호, 열번호, 셀에 들어갈 문자열, 포멧 형식)
+    # write(행번호, 열번호, 셀에 들어갈 문자열, 포맷 형식)
     # 행번호는 0번(첫번째 행)으로 고정.
     # col에 인덱스가 전달됨. -> 열 번호
     worksheet.write(0, col, header, cell_format)
     
 
-cur_page_num = 2 # 현재 페이지 넘버
+cur_page_num = 2 # 현재 페이지 번호
 target_page_num = 9 # 목적지 페이지 번호
-rank = 1 # 순위
 cnt = 2 # 엑셀 행 수를 카운트 해 줄 변수
 
 while cur_page_num <= target_page_num:
@@ -115,7 +114,7 @@ while cur_page_num <= target_page_num:
         
         # 이미지
         img_url = div_ss_book_box.select_one('table div.cover_area div.flipcover_in > img.front_cover')
-        print(img_url)
+        # print(img_url)
 
         # 타이틀, 작가, 가격정보를 모두 포함하는 up부터 시작
         ul = div_ss_book_box.select_one('div.ss_book_box > ul')
@@ -124,8 +123,8 @@ while cur_page_num <= target_page_num:
         title = ul.select_one('li > a.bo3')
 
         # 작가
-        # 위에서 얻은 title의 부모요서 li의 다음 형제 li를 지목 -> 작가, 출판사, 출판일 존재
-        author - title.find_parent().find_next_sibling()
+        # 위에서 얻은 title의 부모요소 li의 다음 형제 li를 지목 -> 작가, 출판사, 출판일 존재
+        author = title.find_parent().find_next_sibling()
 
         # 작가쪽 영역 데이터 상세 분해
         author_data = author.text.split(' | ')
@@ -138,8 +137,14 @@ while cur_page_num <= target_page_num:
         # 기존의 리스트를 기반으로 새로운 리스트를 선언하는데,
         # 리스트 내부의 요소들에게 일괄적으로 적용할 수식, 조건, 함수의 리턴값을 동시에 설정할 수 있게 하는 문법.
 
-
+        '''
+        li = [1, 2, 3, 4, 5]
+        new_li = [n * 2 for n in li] -> [2, 4, 6, 8, 10]
         
+        li = [1, 2, 3, 4, 5, 6, 7]
+        new_li = [n for n in li if n % 2 != 0] -> [1, 3, 5, 7, 9]
+        '''
+
         author, company, pub_day = [info.strip() for info in author_data]
 
 
@@ -158,11 +163,11 @@ while cur_page_num <= target_page_num:
         try:
             # 이미지 바이트 변환 처리
             # BytesIO객체 생성, 생성자의 매개값으로 아까 준비 해놓은 img태그의 src값을 urlopen 메서드에게 전달
-            # 해당 url에 등록한 이미지를 읽어서 바이트 단위로 변환한 객체를 리턴
-            img_data = BytesIO(req.urlopen(img_url['src'].read()))
+            # 해당 url에 등록된 이미지를 읽어서 바이트 단위로 변환한 객체를 리턴
+            img_data = BytesIO(req.urlopen(img_url['src']).read())
 
             # 엑셀에 이미지 저장
-            #  worksheet.insert_image('배치할 셀 번호' , 이미지 제목, {'image_data':바이트로 변환한 이미지, 기타 속성...})
+            # worksheet.insert_image('배치할 셀 번호' , 이미지 제목, {'image_data':바이트로 변환한 이미지, 기타 속성...})
             worksheet.insert_image(f'A{cnt}', img_url['src'], {'image_data':img_data, 'x_scale':0.5, 'y_scale':0.5})
 
         except:
@@ -181,10 +186,10 @@ while cur_page_num <= target_page_num:
 
 
         # 다음 행에 다음 데이터를 배치하기 위해 cnt값 증가
-        cnt + 1
+        cnt += 1
 
         
-    # 다음 페이지(웹)로 전환 
+    # 다음 페이지(탭)로 전환 
     cur_page_num += 1
     driver.find_element(By.XPATH, f'//*[@id="newbg_body"]/div[3]/ul/li[{cur_page_num}]/a').click()
     

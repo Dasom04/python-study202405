@@ -31,7 +31,7 @@ t.sleep(2)
 src = driver.page_source
 # print(src)
 
-# 뷰티풀수프 객체 생성
+# 뷰티풀 수프 객체 생성
 # 객체를 생성하면서, 셀레늄이 가지고 온 html 소스코드를
 # 전달하고, 해당 소스코드를 html 문법으로 변환하라는 주문
 soup = BeautifulSoup(src, 'html.parser')
@@ -45,16 +45,16 @@ soup = BeautifulSoup(src, 'html.parser')
 '''
 div_list = soup.find_all('div', class_='ss_book_box')
 # print('div_list에 들어있는 데이터 수:', len(div_list)) -> 50개
-# print(div_list[0]) # 위 책만 한전 들여다봄.
+# print(div_list[0]) # 1위 책만 한번 들여다 봄.
 #
 
-# li 안에 우리가 필요로 하는 텍스트가 졵3ㅐ.
-# 그중에서 2,3,4 번째의 li 택스트를 가져와야 하겠더라.
+# li 안에 우리가 필요로 하는 텍스트가 존재.
+# 그 중에서 2, 3, 4 번째 li 텍스트를 가져와야 하겠더라.
 
 first_book = div_list[0].find_all('li') # 1위 책 내용에서 모든 li 추출.
 
-# text는 태그를 제외한 사용자가 실체로 브라우저에서 확인 가능한
-# 텍스트만을 추구하여 문자열 형태로 변환합니다.
+# text는 태그를 제외한 사용자가 실제로 브라우저에서 확인 가능한
+# 텍스트만을 추출하여 문자열 형태로 반환합니다.
 
 book_title = first_book[1].text # 두 번째 li를 지목하기 위해 1번 인덱스로 지목
 book_author = first_book[2].text
@@ -65,6 +65,6 @@ auth_info = book_author.split(' | ')
 print(f'제목: {book_title}')
 print(f'저자: {auth_info[0]}')
 print(f'출판사: {auth_info[1]}')
-print(f'출판월일: {auth_info[2]}')
+print(f'출판년월: {auth_info[2]}')
 print(f'가격: {book_price.split(", ")[0]}')
 
